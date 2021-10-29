@@ -86,3 +86,25 @@ const viewDepartments = () => {
     } else console.table(rows);
   });
 };
+
+const viewRoles = () => {
+  console.log("\n \n NOW VIEWING ALL ROLES \n \n");
+
+  const sql = `SELECT role.id, role.title, role.salary, department.name AS department FROM role JOIN department ON role.department_id = department.id;`;
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+    } else console.table(rows);
+  });
+};
+
+const viewEmployees = () => {
+    console.log("\n \n NOW VIEWING ALL EMPLOYEES \n \n");
+  
+    const sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department, CONCAT (manager.first_name, " ", manager.last_name) AS manager FROM employee JOIN role on employee.role_id = role.id JOIN department ON role.department_id = department.id JOIN employee manager ON employee.manager_id`;
+    db.query(sql, (err, rows) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+      } else console.table(rows);
+    });
+  };
