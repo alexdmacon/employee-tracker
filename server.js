@@ -111,3 +111,27 @@ const viewEmployees = () => {
     startTracker();
   });
 };
+
+const addDepartment = () => {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "newDepartment",
+            message: "Enter the name of the new department."
+        }
+    ])
+    .then((answer) => {
+
+        const { newDepartment } = answer;
+
+        const sql = `INSERT INTO department (name)
+        VALUES (?)`;
+
+        db.query(sql, newDepartment, (err, result) => {
+            if (err) {
+                console.log("Error: ", err);
+            } else console.log("\n Department added.");
+            viewDepartments();
+        })
+    })
+}
