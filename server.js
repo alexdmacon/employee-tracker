@@ -26,7 +26,7 @@ const startTracker = () => {
     .prompt([
       {
         type: "list",
-        name: "employee_db",
+        name: "doThis",
         message: "What do you want to do?",
         choices: [
           "View All Departments",
@@ -41,32 +41,35 @@ const startTracker = () => {
       },
     ])
     .then((answer) => {
-        const { selection } = answer;
-
-      if (selection === "View All Departments") {
-          console.log("View All Departments")
+      const { doThis } = answer;
+      if (doThis === "View All Departments") {
         viewDepartments();
       }
-      if (answer === "View All Roles") {
+      if (doThis === "View All Roles") {
         viewRoles();
       }
-      if (answer === "View All Employees") {
+      if (doThis === "View All Employees") {
         viewEmployees();
       }
-      if (answer === "Add a Department") {
+      if (doThis === "Add a Department") {
         addDepartment();
       }
-      if (answer === "Add an Employee") {
+      if (doThis === "Add an Employee") {
         addEmployee();
       }
-      if (answer === "Add a Role") {
+      if (doThis === "Add a Role") {
         addRole();
       }
-      if (answer === "Update an Employee Role") {
+      if (doThis === "Update an Employee Role") {
         updateRole();
       }
-      if (answer === "Exit") {
-        db.end;
+      if (doThis === "Exit") {
+        exit();
+      }
+    })
+    .catch((error) => {
+      if (err) {
+        `Error`;
       }
     });
 };
@@ -74,12 +77,12 @@ const startTracker = () => {
 startTracker();
 
 const viewDepartments = () => {
-    console.log("Viewing all departments");
+  console.log("\n \n NOW VIEWING ALL DEPARTMENTS \n \n");
 
-    const sql = `SELECT department.id, department.name FROM department;`;
-    db.query(sql, (err, rows) => {
-      if (err) {
-        res.status(500).json({ error: err.message });
-      } else console.table(rows);
-    });
+  const sql = `SELECT department.id, department.name FROM department;`;
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+    } else console.table(rows);
+  });
 };
