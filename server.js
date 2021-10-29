@@ -67,9 +67,9 @@ const startTracker = () => {
         exit();
       }
     })
-    .catch((error) => {
+    .catch((err) => {
       if (err) {
-        console.log("Error: ", err);
+        console.log(err);
       }
     });
 };
@@ -82,7 +82,7 @@ const viewDepartments = () => {
   const sql = `SELECT department.id, department.name FROM department;`;
   db.query(sql, (err, rows) => {
     if (err) {
-        console.log("Error: ", err);
+        console.log(err);
     } else console.table(rows);
     startTracker();
   });
@@ -94,7 +94,7 @@ const viewRoles = () => {
   const sql = `SELECT role.id, role.title, role.salary, department.name AS department FROM role JOIN department ON role.department_id = department.id;`;
   db.query(sql, (err, rows) => {
     if (err) {
-        console.log("Error: ", err);
+        console.log(err);
     } else console.table(rows);
     startTracker();
   });
@@ -106,7 +106,7 @@ const viewEmployees = () => {
   const sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT (manager.first_name, " ", manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON employee.manager_id = manager.id`;
   db.query(sql, (err, rows) => {
     if (err) {
-      console.log("Error: ", err);
+      console.log(err);
     } else console.table(rows);
     startTracker();
   });
@@ -129,8 +129,59 @@ const addDepartment = () => {
 
         db.query(sql, newDepartment, (err, result) => {
             if (err) {
-                console.log("Error: ", err);
+                console.log(err);
             } else console.log("\n Department added.");
+            viewDepartments();
+        })
+    })
+}
+
+
+const getDepartmentList = (departments) => {
+const departmentList = `SELECT id, name FROM department`;
+
+db.promise().query(departmentList, (err, res) => {
+    if (err) {console.log(err)};
+    
+    const departments = res.map(({ name, id }) => ({ name: name, value: id }))
+})}
+
+
+
+
+const addRole = () => {
+
+
+
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "newRole",
+            message: "Enter the name of the new role."
+        },
+        {
+            type: "list",
+            name: "roleDepartment",
+            message: "What department is this role assigned to?",
+            choices: departments
+        },
+        {
+            type: "input",
+            name: "roleSalary",
+            message: "What's this role's starting salary?"
+        },
+
+    ])
+    .then((answers) => {
+
+        const { newRole } = answers;
+
+        const sql = `INSERT INTO `;
+
+        db.query(sql, newDepartment, (err, result) => {
+            if (err) {
+                console.log(err);
+            } else console.log("\n Role added.");
             viewDepartments();
         })
     })
