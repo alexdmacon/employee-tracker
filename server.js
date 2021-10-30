@@ -21,7 +21,26 @@ const db = mysql.createConnection(
   console.log(`Connected to the employees_db database.`)
 );
 
+const departmentArray = [];
+
+const getDepartments = () => {
+  const departmentList = `SELECT id, name FROM department`;
+
+  db.query(departmentList, (err, res) => {
+    if (err) {
+      console.log(err);
+    } else {
+      // console.log(res);
+      for (i=0; i< res.length; i++){
+      departmentArray.push(res[i]).name};
+    }
+  });
+  return departmentArray;
+};
+
 const startTracker = () => {
+    getDepartments();
+
   inquirer
     .prompt([
       {
@@ -136,43 +155,32 @@ const addDepartment = () => {
     });
 };
 
-const departmentArray = []
 
-const getDepartments = () => {
-  const departmentList = `SELECT id, name FROM department`;
 
-  db.promise().query(departmentList, (err, res) => {
-    if (err) {
-      console.log(err);
-    } else {departmentArray.push(res)};
-  }) 
-  console.log(departmentArray);
-};
-
-const departments = res.map(({ name, id }) => ({ name: name, value: id }));
 
 const addRole = () => {
-    getDepartments();
+    console.log("Department array: ", departmentArray);
 
-  inquirer
-    .prompt([
-      {
-        type: "input",
-        name: "newRole",
-        message: "Enter the name of the new role.",
-      },
-      {
-        type: "list",
-        name: "roleDepartment",
-        message: "What department is this role assigned to?",
-        choices: "I",
-      },
-      {
-        type: "input",
-        name: "roleSalary",
-        message: "What's this role's starting salary?",
-      },
-    ])
+   //  const departmentList = departmentArray.map(({ name, id }) => ({ name: name, value: id }))
+
+      inquirer.prompt([
+        {
+          type: "input",
+          name: "newRole",
+          message: "Enter the name of the new role.",
+        },
+        {
+          type: "list",
+          name: "roleDepartment",
+          message: "What department is this role assigned to?",
+          choices: departmentArray
+        },
+        {
+          type: "input",
+          name: "roleSalary",
+          message: "What's this role's starting salary?",
+        },
+      ])
     .then((answers) => {
       const { newRole } = answers;
 
