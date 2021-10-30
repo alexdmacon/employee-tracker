@@ -1,7 +1,7 @@
 # employee-tracker
 
 ## Description
-This is a command-line application that allows the user to access a content management system that ineracts with a company's employee database. The company is hypothetical, but the app is real, and was developed primarily to help me practice working with databases, Node.js, and MySQL. Also getting more familiar with the good old principles of CRUD.
+This is a command-line application that allows the user to access a content management system that interacts with a company's employee database. The company is hypothetical, but the app is real, and was developed primarily to help me practice working with databases, Node.js, and MySQL. Also getting more familiar with the good old principles of CRUD.
 
 [Here's a link to a video demo showing how it works](https://drive.google.com/file/d/1_X7uqyT5WLuHA24RRBDPG99TdyL-uEcE/view)
 
