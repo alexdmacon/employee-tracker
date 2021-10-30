@@ -1,16 +1,18 @@
+// importing npm modules and Express framework
 const express = require("express");
 const mysql = require("mysql2");
 const inquirer = require("inquirer");
 const cTable = require("console.table");
 
+// sets a local host port, although this is all going to run through the command line so I don't think I actually need this.
 const PORT = process.env.PORT || 3001;
-const app = express();
 
 // Express middleware
+const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// Connect to database
+// Used to connect to mysql database
 const db = mysql.createConnection(
   {
     host: "localhost",
@@ -21,12 +23,14 @@ const db = mysql.createConnection(
   console.log(`Connected to the employees_db database.`)
 );
 
+// At least two too many arrays—it'd be better to .map some of these within functions—but these will hold items from the database that we'll need to access in the inquirer prompts.
 const departmentArray = [];
 const roleArray = [];
 const managerArray = [];
-const roleArrayTitles =[];
+const roleArrayTitles = [];
 const managerArrayTitles = [];
 
+// puts employee data from database in arrays. Need titles to populate choices in inquirer prompt, and separate ids to add user input to database.
 const getManagers = () => {
   const employeeList = `SELECT employee.id, CONCAT(employee.first_name, " ", employee.last_name) AS name FROM employee;`;
 
@@ -36,7 +40,7 @@ const getManagers = () => {
     } else {
       for (i = 0; i < res.length; i++) {
         managerArray.push(res[i]);
-      };
+      }
       for (i = 0; i < res.length; i++) {
         managerArrayTitles.push(res[i].name);
       }
@@ -45,6 +49,7 @@ const getManagers = () => {
   return managerArray;
 };
 
+// puts role data from database in arrays
 const getRoles = () => {
   const roleList = `SELECT id, title FROM role;`;
 
@@ -52,8 +57,6 @@ const getRoles = () => {
     if (err) {
       console.log(err);
     } else {
-      // console.log(res);
-      // console.log("Look all these freaking roles: ", res);
       for (i = 0; i < res.length; i++) {
         roleArray.push(res[i]);
       }
@@ -65,6 +68,7 @@ const getRoles = () => {
   return roleArray;
 };
 
+// puts department data from database in array
 const getDepartments = () => {
   const departmentList = `SELECT id, name FROM department;`;
 
@@ -72,7 +76,6 @@ const getDepartments = () => {
     if (err) {
       console.log(err);
     } else {
-      // console.log(res);
       for (i = 0; i < res.length; i++) {
         departmentArray.push(res[i]).name;
       }
@@ -81,7 +84,10 @@ const getDepartments = () => {
   return departmentArray;
 };
 
+// will run on start. contains command line prompts.
 const startTracker = () => {
+
+// gets the arrays ready for action
   getDepartments();
   getRoles();
   getManagers();
@@ -140,6 +146,7 @@ const startTracker = () => {
 
 startTracker();
 
+// view functions all query SQL database and use cTable package to display requested data in tables.
 const viewDepartments = () => {
   console.log("\n \n NOW VIEWING ALL DEPARTMENTS \n \n");
 
@@ -201,7 +208,6 @@ const addDepartment = () => {
 };
 
 const addRole = () => {
-  // console.log("Department array: ", departmentArray);
   inquirer
     .prompt([
       {
@@ -244,34 +250,35 @@ const addRole = () => {
 };
 
 const addEmployee = () => {
-  inquirer.prompt([
-    {
-      type: "input",
-      name: "employeeFirstName",
-      message: "Enter the employee's first name.",
-    },
-    {
-      type: "input",
-      name: "employeeLastName",
-      message: "Enter the employee's last name.",
-    },
-    {
-      type: "list",
-      name: "employeeRole",
-      message: "What is the employee's role?",
-      choices: roleArrayTitles,
-    },
-    {
-      type: "list",
-      name: "employeeManager",
-      message: "Who is the employee's manager?",
-      choices: managerArrayTitles,
-    },
-  ]).then((answers) => {
-
-    console.log("Role Array: " , roleArray);
-    console.log("Manager Array: " , managerArray);
-    console.log("Department Array: " , departmentArray);
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "employeeFirstName",
+        message: "Enter the employee's first name.",
+      },
+      {
+        type: "input",
+        name: "employeeLastName",
+        message: "Enter the employee's last name.",
+      },
+      {
+        type: "list",
+        name: "employeeRole",
+        message: "What is the employee's role?",
+        choices: roleArrayTitles,
+      },
+      {
+        type: "list",
+        name: "employeeManager",
+        message: "Who is the employee's manager?",
+        choices: managerArrayTitles,
+      },
+    ])
+    .then((answers) => {
+      console.log("Role Array: ", roleArray);
+      console.log("Manager Array: ", managerArray);
+      console.log("Department Array: ", departmentArray);
 
       let role_id;
       let manager_id;
@@ -283,12 +290,12 @@ const addEmployee = () => {
       }
 
       for (i = 0; i < managerArray.length; i++) {
-          if (answers.employeeManager === managerArray[i].name) {
-              manager_id = managerArray[i].id;
-          }
+        if (answers.employeeManager === managerArray[i].name) {
+          manager_id = managerArray[i].id;
+        }
       }
 
-      const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${answers.employeeFirstName}", "${answers.employeeLastName}", ${role_id}, ${manager_id});`
+      const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${answers.employeeFirstName}", "${answers.employeeLastName}", ${role_id}, ${manager_id});`;
 
       db.query(sql, (err, res) => {
         if (err) {
@@ -296,8 +303,5 @@ const addEmployee = () => {
         } else console.log("\n New employee added.");
         viewEmployees();
       });
-
-
-  })
-  ;
+    });
 };
