@@ -288,7 +288,7 @@ const addEmployee = () => {
           }
       }
 
-      const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES "${answers.employeeFirstName}", "${answers.employeeLastName}", ${role_id}, ${manager_id};`
+      const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${answers.employeeFirstName}", "${answers.employeeLastName}", ${role_id}, ${manager_id});`
 
       db.query(sql, (err, res) => {
         if (err) {
