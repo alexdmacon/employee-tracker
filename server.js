@@ -196,12 +196,10 @@ const addDepartment = () => {
       },
     ])
     .then((answer) => {
-      const { newDepartment } = answer;
-
       const sql = `INSERT INTO department (name)
-        VALUES (?);`;
+        VALUES ("${answer.newDepartment}");`;
 
-      db.query(sql, newDepartment, (err, result) => {
+      db.query(sql, (err, result) => {
         if (err) {
           console.log(err);
         } else console.log("\n Department added.");
@@ -278,10 +276,6 @@ const addEmployee = () => {
       },
     ])
     .then((answers) => {
-      console.log("Role Array: ", roleArray);
-      console.log("Manager Array: ", managerArray);
-      console.log("Department Array: ", departmentArray);
-
       let role_id;
       let manager_id;
 

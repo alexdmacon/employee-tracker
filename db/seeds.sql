@@ -17,12 +17,12 @@ VALUES ("Director of Sales", 180000, 1),
 ("Paralegal", 80000, 4);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Mickey", "Mouse", 1, NULL),
-("Donald", "Duck", 2, 1),
-("Bugs", "Bunny", 3, NULL),
+VALUES ("Walt", "Whitman", 1, NULL),
+("Emily", "Dickinson", 2, 1),
+("Joe", "Schmo", 3, NULL),
 ("Daffy", "Duck", 4, 3),
-("Pluto", "the Dog", 5, 3),
-("Minnie", "Mouse", 6, NULL),
+("Donald", "Duck (no relation)", 5, 3),
+("Bugs", "Bunny", 6, NULL),
 ("Virginia", "Woolf", 7, 6),
 ("Gertrude", "Stein", 8, NULL),
 ("Ernest", "Hemingway", 9, 8),
