@@ -82,7 +82,7 @@ const viewDepartments = () => {
   const sql = `SELECT department.id, department.name FROM department;`;
   db.query(sql, (err, rows) => {
     if (err) {
-        console.log(err);
+      console.log(err);
     } else console.table(rows);
     startTracker();
   });
@@ -94,7 +94,7 @@ const viewRoles = () => {
   const sql = `SELECT role.id, role.title, role.salary, department.name AS department FROM role JOIN department ON role.department_id = department.id;`;
   db.query(sql, (err, rows) => {
     if (err) {
-        console.log(err);
+      console.log(err);
     } else console.table(rows);
     startTracker();
   });
@@ -113,76 +113,76 @@ const viewEmployees = () => {
 };
 
 const addDepartment = () => {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "newDepartment",
-            message: "Enter the name of the new department."
-        }
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "newDepartment",
+        message: "Enter the name of the new department.",
+      },
     ])
     .then((answer) => {
+      const { newDepartment } = answer;
 
-        const { newDepartment } = answer;
-
-        const sql = `INSERT INTO department (name)
+      const sql = `INSERT INTO department (name)
         VALUES (?)`;
 
-        db.query(sql, newDepartment, (err, result) => {
-            if (err) {
-                console.log(err);
-            } else console.log("\n Department added.");
-            viewDepartments();
-        })
-    })
-}
+      db.query(sql, newDepartment, (err, result) => {
+        if (err) {
+          console.log(err);
+        } else console.log("\n Department added.");
+        viewDepartments();
+      });
+    });
+};
 
+const departmentArray = []
 
-const getDepartmentList = (departments) => {
-const departmentList = `SELECT id, name FROM department`;
+const getDepartments = () => {
+  const departmentList = `SELECT id, name FROM department`;
 
-db.promise().query(departmentList, (err, res) => {
-    if (err) {console.log(err)};
-    
-    const departments = res.map(({ name, id }) => ({ name: name, value: id }))
-})}
+  db.promise().query(departmentList, (err, res) => {
+    if (err) {
+      console.log(err);
+    } else {departmentArray.push(res)};
+  }) 
+  console.log(departmentArray);
+};
 
-
-
+const departments = res.map(({ name, id }) => ({ name: name, value: id }));
 
 const addRole = () => {
+    getDepartments();
 
-
-
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "newRole",
-            message: "Enter the name of the new role."
-        },
-        {
-            type: "list",
-            name: "roleDepartment",
-            message: "What department is this role assigned to?",
-            choices: departments
-        },
-        {
-            type: "input",
-            name: "roleSalary",
-            message: "What's this role's starting salary?"
-        },
-
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "newRole",
+        message: "Enter the name of the new role.",
+      },
+      {
+        type: "list",
+        name: "roleDepartment",
+        message: "What department is this role assigned to?",
+        choices: "I",
+      },
+      {
+        type: "input",
+        name: "roleSalary",
+        message: "What's this role's starting salary?",
+      },
     ])
     .then((answers) => {
+      const { newRole } = answers;
 
-        const { newRole } = answers;
+      const sql = `INSERT INTO `;
 
-        const sql = `INSERT INTO `;
-
-        db.query(sql, newDepartment, (err, result) => {
-            if (err) {
-                console.log(err);
-            } else console.log("\n Role added.");
-            viewDepartments();
-        })
-    })
-}
+      db.query(sql, newDepartment, (err, result) => {
+        if (err) {
+          console.log(err);
+        } else console.log("\n Role added.");
+        viewDepartments();
+      });
+    });
+};
