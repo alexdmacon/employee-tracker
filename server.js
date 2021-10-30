@@ -260,5 +260,32 @@ const addEmployee = () => {
       message: "Who is the employee's manager?",
       choices: managerArray,
     },
-  ]);
+  ]).then((answers) => {
+      let role_id;
+      let manager_id;
+
+      for (i = 0; i < roleArray.length; i++) {
+        if (answers.employeeRole === roleArray[i].title) {
+          role_id = roleArray[i].id;
+        }
+      }
+
+      for (i = 0; i < managerArray.length; i++) {
+          if (answers.employeeManager === managerArray[i].name) {
+              manager_id = managerArray[i].id;
+          }
+      }
+
+      const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES "${answers.employeeFirstName}", "${answers.employeeLastName}", ${role_id}, ${manager_id};`
+
+      db.query(sql, (err, res) => {
+        if (err) {
+          console.log(err);
+        } else console.log("\n New employee added.");
+        viewEmployees();
+      });
+
+
+  })
+  ;
 };
