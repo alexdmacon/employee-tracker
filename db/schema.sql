@@ -1,5 +1,3 @@
---Creates MYSQL database with three tables: for employees, their roles, and departments, respectively
-
 DROP DATABASE IF EXISTS employees_db;
 CREATE DATABASE employees_db;
 

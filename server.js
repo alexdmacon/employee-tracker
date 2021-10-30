@@ -12,7 +12,7 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// Used to connect to mysql database
+// Used to connect to mysql database. will use .env to hide passwords for real apps but not especially concerned in this case.
 const db = mysql.createConnection(
   {
     host: "localhost",
@@ -86,12 +86,12 @@ const getDepartments = () => {
 
 // will run on start. contains command line prompts.
 const startTracker = () => {
-
-// gets the arrays ready for action
+  // gets the arrays ready for action
   getDepartments();
   getRoles();
   getManagers();
 
+  // user selection menu
   inquirer
     .prompt([
       {
@@ -110,6 +110,7 @@ const startTracker = () => {
         ],
       },
     ])
+    // user answer calls corresponding function
     .then((answer) => {
       const { doThis } = answer;
       if (doThis === "View All Departments") {
@@ -144,9 +145,10 @@ const startTracker = () => {
     });
 };
 
+// kicks everything off
 startTracker();
 
-// view functions all query SQL database and use cTable package to display requested data in tables.
+// "view" functions all query SQL database connection and use cTable package to display requested data in tables.
 const viewDepartments = () => {
   console.log("\n \n NOW VIEWING ALL DEPARTMENTS \n \n");
 
@@ -183,6 +185,7 @@ const viewEmployees = () => {
   });
 };
 
+// "add" functions all insert data into MYSQL database. This code is a mess I'd like to clean up later but it works for now.
 const addDepartment = () => {
   inquirer
     .prompt([
@@ -235,7 +238,6 @@ const addRole = () => {
           department_id = departmentArray[i].id;
         }
       }
-      //console.log("Role department is " , answers.roleDepartment);
 
       const sql = `INSERT INTO role (title, salary, department_id)
       VALUES ("${answers.newRole}", ${answers.roleSalary}, ${department_id});`;
@@ -283,6 +285,7 @@ const addEmployee = () => {
       let role_id;
       let manager_id;
 
+      // this is where I should be using a .map instead of these different arrays. But I needed a separate array to populate choices in inquirer prompt, and this main array to select both the title and the id. if user choice or new employee's role corresponds to role in array (which it will), then create a new variable with id of selected role. need this to insert new employee in database.
       for (i = 0; i < roleArray.length; i++) {
         if (answers.employeeRole === roleArray[i].title) {
           role_id = roleArray[i].id;
