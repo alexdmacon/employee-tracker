@@ -22,6 +22,24 @@ const db = mysql.createConnection(
 );
 
 const departmentArray = [];
+const roleArray = [];
+
+const getRoles = () => {
+  const roleList = 'SELECT id, title FROM role ORDER BY title ASC';
+
+  db.query(roleList, (err, res) => {
+    if (err) {
+      console.log(err);
+    } else {
+        console.log(res);
+      // console.log("Look all these freaking roles: ", res);
+      for (i=0; i < res.length; i++){
+        roleArray.push(res[i].title);
+    }
+    }
+  });
+  return roleArray;
+};
 
 const getDepartments = () => {
   const departmentList = `SELECT id, name FROM department`;
@@ -41,6 +59,7 @@ const getDepartments = () => {
 
 const startTracker = () => {
   getDepartments();
+  getRoles();
 
   inquirer
     .prompt([
@@ -178,14 +197,13 @@ const addRole = () => {
       },
     ])
     .then((answers) => {
+      let department_id;
 
-        let department_id;
-        
-        for (i=0; i < departmentArray.length; i++) {
-            if (answers.roleDepartment === departmentArray[i].name) {
-                department_id = departmentArray[i].id;
-            }
+      for (i = 0; i < departmentArray.length; i++) {
+        if (answers.roleDepartment === departmentArray[i].name) {
+          department_id = departmentArray[i].id;
         }
+      }
       //console.log("Role department is " , answers.roleDepartment);
 
       const sql = `INSERT INTO role (title, salary, department_id)
@@ -198,4 +216,28 @@ const addRole = () => {
         viewRoles();
       });
     });
+};
+
+const addEmployee = () => {
+  inquirer.prompt([
+    {
+      type: "input",
+      name: "employeeFirstName",
+      message: "Enter the employee's first name.",
+    },
+    {
+      type: "input",
+      name: "employeeLastName",
+      message: "Enter the employee's last name.",
+    },
+    {
+      type: "list",
+      name: "employeeRole",
+      message: "What is the employee's role?",
+      choices: roleArray,
+    },
+    {
+        type: "list",
+    }
+  ]);
 };
