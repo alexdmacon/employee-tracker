@@ -31,15 +31,16 @@ const getDepartments = () => {
       console.log(err);
     } else {
       // console.log(res);
-      for (i=0; i< res.length; i++){
-      departmentArray.push(res[i]).name};
+      for (i = 0; i < res.length; i++) {
+        departmentArray.push(res[i]).name;
+      }
     }
   });
   return departmentArray;
 };
 
 const startTracker = () => {
-    getDepartments();
+  getDepartments();
 
   inquirer
     .prompt([
@@ -155,42 +156,46 @@ const addDepartment = () => {
     });
 };
 
-
-
-
 const addRole = () => {
-    console.log("Department array: ", departmentArray);
-
-   //  const departmentList = departmentArray.map(({ name, id }) => ({ name: name, value: id }))
-
-      inquirer.prompt([
-        {
-          type: "input",
-          name: "newRole",
-          message: "Enter the name of the new role.",
-        },
-        {
-          type: "list",
-          name: "roleDepartment",
-          message: "What department is this role assigned to?",
-          choices: departmentArray
-        },
-        {
-          type: "input",
-          name: "roleSalary",
-          message: "What's this role's starting salary?",
-        },
-      ])
+  // console.log("Department array: ", departmentArray);
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "newRole",
+        message: "Enter the name of the new role.",
+      },
+      {
+        type: "input",
+        name: "roleSalary",
+        message: "What's this role's starting salary?",
+      },
+      {
+        type: "list",
+        name: "roleDepartment",
+        message: "What department is this role assigned to?",
+        choices: departmentArray,
+      },
+    ])
     .then((answers) => {
-      const { newRole } = answers;
 
-      const sql = `INSERT INTO `;
+        let department_id;
+        
+        for (i=0; i < departmentArray.length; i++) {
+            if (answers.roleDepartment === departmentArray[i].name) {
+                department_id = departmentArray[i].id;
+            }
+        }
+      //console.log("Role department is " , answers.roleDepartment);
 
-      db.query(sql, newDepartment, (err, result) => {
+      const sql = `INSERT INTO role (title, salary, department_id)
+      VALUES ("${answers.newRole}", ${answers.roleSalary}, ${department_id})`;
+
+      db.query(sql, (err, result) => {
         if (err) {
           console.log(err);
         } else console.log("\n Role added.");
-        viewDepartments();
+        viewRoles();
       });
     });
 };
