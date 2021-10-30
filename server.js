@@ -24,17 +24,21 @@ const db = mysql.createConnection(
 const departmentArray = [];
 const roleArray = [];
 const managerArray = [];
+const roleArrayTitles =[];
+const managerArrayTitles = [];
 
 const getManagers = () => {
-  const employeeList = `SELECT employee.id, CONCAT(employee.first_name, " ", employee.last_name) AS name FROM employee ORDER by name ASC;`;
+  const employeeList = `SELECT employee.id, CONCAT(employee.first_name, " ", employee.last_name) AS name FROM employee;`;
 
   db.query(employeeList, (err, res) => {
     if (err) {
       console.log(err);
     } else {
-      console.log(res);
       for (i = 0; i < res.length; i++) {
-        managerArray.push(res[i].name);
+        managerArray.push(res[i]);
+      };
+      for (i = 0; i < res.length; i++) {
+        managerArrayTitles.push(res[i].name);
       }
     }
   });
@@ -42,16 +46,19 @@ const getManagers = () => {
 };
 
 const getRoles = () => {
-  const roleList = `SELECT id, title FROM role ORDER BY title ASC;`;
+  const roleList = `SELECT id, title FROM role;`;
 
   db.query(roleList, (err, res) => {
     if (err) {
       console.log(err);
     } else {
-      console.log(res);
+      // console.log(res);
       // console.log("Look all these freaking roles: ", res);
       for (i = 0; i < res.length; i++) {
-        roleArray.push(res[i].title);
+        roleArray.push(res[i]);
+      }
+      for (i = 0; i < res.length; i++) {
+        roleArrayTitles.push(res[i].title);
       }
     }
   });
@@ -252,15 +259,20 @@ const addEmployee = () => {
       type: "list",
       name: "employeeRole",
       message: "What is the employee's role?",
-      choices: roleArray,
+      choices: roleArrayTitles,
     },
     {
       type: "list",
       name: "employeeManager",
       message: "Who is the employee's manager?",
-      choices: managerArray,
+      choices: managerArrayTitles,
     },
   ]).then((answers) => {
+
+    console.log("Role Array: " , roleArray);
+    console.log("Manager Array: " , managerArray);
+    console.log("Department Array: " , departmentArray);
+
       let role_id;
       let manager_id;
 
